@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import random
 import os
+import result_ASCII
 
 class wyraz:
     lista_slow={1:"stokrotka", 2:"komputera", 3:"rabarbar", 4:"kraj", 5:"prostopadłościan"}
@@ -23,6 +24,7 @@ class wyraz:
 
 class game:
     __statement = ""
+    __result = 6
     
     def __init__(self, wylosowane_slowo = wyraz()):
         self.wylosowane_slowo = wylosowane_slowo
@@ -30,7 +32,7 @@ class game:
         
    
     def getChar(self):      #pobiera i zwraca znak od gracza
-        self.char =  input("wpisz litere: ")
+        self.char =  input("Wpisz litere: ")
     #    self.char = "'" + self.char + "'"
         return self.char
     
@@ -42,30 +44,45 @@ class game:
     
     def getStatement(self):
         print(self.__statement)
-        self.state="asdf"
+    
+
  
         
     
-    def checkChar(self, wylosowane_slowo_tablica, playground,):  #sprawdza czy znak występuję w słowie(jeżeli tak -wypisuje)
+    def checkChar(self, wylosowane_slowo_tablica, playground, show_ascii):  #sprawdza czy znak występuję w słowie(jeżeli tak -wypisuje)
         char = self.getChar()
+        result_indicator = 0
         for i in range(len(wylosowane_slowo_tablica)):
             self.uzyte_litery.add(str(char)) 
             if wylosowane_slowo_tablica[i] == str(char):
                 self.setStatement(True)
                 playground[i*2] = char
-            #if wylosowane_slowo_tablica[i] != str(char):
-                #self.setStatement(False)  
+                result_indicator = 1
                 continue
+        if result_indicator != 1:
+            show_ascii.setResult()
+        
+    def display(self, playground,): 
         os.system("cls")
-        print("".join(playground).center(40))
+        print("*****************W I S I E L E C*************************")
+        print("".join(playground).center(40), "\n")
         self.getStatement()
-        print(list(self.uzyte_litery))
+        print("Użyłeś już następujących liter: ", list(self.uzyte_litery))
         self.setStatement(False)
+        
+    def showASCII(self, show_ascii): 
+        show_ascii.showResult()
 
 ########################
-print("*****************W I S I E L E C*************************")
+#print("*****************W I S I E L E C*************************")
+res =result_ASCII.result()
 wylosowane_slowo = wyraz()
 gra = game()
-while wylosowane_slowo.plgrnd.count('_') > 0:
-    gra.checkChar(wylosowane_slowo.slowo_tablica, wylosowane_slowo.plgrnd)
+gra.display(wylosowane_slowo.plgrnd,)
+while res.getResult() != 0 and wylosowane_slowo.plgrnd.count('_') > 0:
+    gra.checkChar(wylosowane_slowo.slowo_tablica, wylosowane_slowo.plgrnd, res )
+    gra.display(wylosowane_slowo.plgrnd,)
+    res.showResult()
 
+exit=input("Press enter to exit")
+   
